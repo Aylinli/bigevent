@@ -37,3 +37,6 @@
 #welcome {
     user-select: none;
 }
+.layui-body {
+    overflow: hidden;
+}
