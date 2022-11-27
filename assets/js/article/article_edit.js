@@ -1,5 +1,8 @@
 $(function () {
-   
+    const hrefstr = location.search
+    const id = hrefstr.split('?')[1]
+    //根据id获取文章信息并进行渲染
+    renderform()
     const form = layui.form
     // 初始化富文本编辑器
     initEditor()
@@ -21,7 +24,6 @@ $(function () {
     //监听文件选择
     $(".files").on("change", function (e) {
         const files = e.target.files
-        console.log(files);
         if (files.length < 1) {
             return
         }
@@ -37,7 +39,7 @@ $(function () {
     //获取文章分类列表并渲染下拉框
     function getcates() {
         $.ajax({
-            mtehod: 'GET',
+            method: 'GET',
             url: '/my/article/cates',
             success: function (res) {
                 if (res.status !== 0) {
@@ -51,6 +53,23 @@ $(function () {
             }
         })
     }
+    //根据id获取文章信息并进行渲染
+    function renderform() {
+        $.ajax({
+            method: 'GET',
+            url: '/my/article/' + id,
+            success: function(res) {
+                renderedit(res.data)
+            }
+        })
+
+    }
+    //渲染表单
+    function renderedit(data) {
+        $('[name=title]').val(data.title)
+        $('[name=content]').val(data.content)
+        $('#image').attr('src','http://api-breakingnews-web.itheima.net' + data.cover_img)
+    }
     //点击存为草稿
     let states = '已发布'
     $("#cao").on("click", function () {
@@ -62,6 +81,7 @@ $(function () {
         e.preventDefault()
         const fd = new FormData($(this)[0])
         fd.append('state', states)
+        fd.append('Id',id)
         $image
             .cropper('getCroppedCanvas', {
                 // 创建一个 Canvas 画布
@@ -78,10 +98,11 @@ $(function () {
             })
 
     })
+    //根据id更新新文章信息
     function publishArticle(fd) {
         $.ajax({
             method: 'POST',
-            url: '/my/article/add',
+            url: '/my/article/edit',
             data: fd,
             // 注意：如果向服务器提交的是 FormData 格式的数据，
             // 必须添加以下两个配置项
@@ -89,9 +110,9 @@ $(function () {
             processData: false,
             success: function (res) {
                 if (res.status !== 0) {
-                    return layer.msg('发表文章失败')
+                    return layer.msg('修改文章失败')
                 }
-                layer.msg('发表文章成功')
+                layer.msg('修改文章成功')
                 location.href = './article_lists.html'
             }
         })

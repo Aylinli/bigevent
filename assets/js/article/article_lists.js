@@ -77,10 +77,8 @@ $(function () {
      //编辑文章
      $('body').on('click', '#edit_art', function () {
         // module.exports.id = $(this).attr('data-id')
-        const id = $(this).attr('data-id')
-        console.log(id);
-        
-        location.href = './article_edit.html'
+        let id = $(this).attr('data-id')        
+        location.href = './article_edit.html?' +id
     })
     //根据id删除文章数据
     $('body').on('click', '#del_art', function () {
