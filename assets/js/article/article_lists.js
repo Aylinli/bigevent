@@ -13,7 +13,7 @@ $(function () {
         return n
     }
 
-    //格式化事件
+    //格式化时间
     template.defaults.imports.formatdate = function (vdate) {
         const date = new Date(vdate)
         const year = date.getFullYear()
@@ -41,10 +41,7 @@ $(function () {
                 layer.msg('获取文章列表成功')
                 const htmlstr = template('art_lists', res)
                 $("tbody").html(htmlstr)
-                if (res.data.length > 0) {
-                    renderPage(res.total)
-                }
-   
+                renderPage(res.total)
             }
         })
     }
@@ -77,7 +74,14 @@ $(function () {
         q.state = state
         getlists()
     })
-   
+     //编辑文章
+     $('body').on('click', '#edit_art', function () {
+        // module.exports.id = $(this).attr('data-id')
+        const id = $(this).attr('data-id')
+        console.log(id);
+        
+        location.href = './article_edit.html'
+    })
     //根据id删除文章数据
     $('body').on('click', '#del_art', function () {
         const id = $(this).attr('data-id')
@@ -97,7 +101,7 @@ $(function () {
                     // 如果 len 的值等于1，证明删除完毕之后，页面上就没有任何数据了
                     // 页码值最小必须是 1
                     q.pagenum = q.pagenum === 1 ? 1 : q.pagenum - 1
-                  }
+                }
                 getlists()
             }
         })
@@ -117,11 +121,11 @@ $(function () {
                 layout: ['count', 'limit', 'prev', 'page', 'next', 'skip'],
                 jump: function (obj, first) {
                     //obj包含了当前分页的所有参数，比如：
-                 //得到当前页，以便向服务端请求对应页的数据。
+                    //得到当前页，以便向服务端请求对应页的数据。
                     q.pagenum = obj.curr
-                   //得到每页显示的条数
+                    //得到每页显示的条数
                     q.pagesize = obj.limit
-                    
+
                     //首次不执行
                     if (!first) {
                         //do something
